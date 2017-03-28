@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns:c="http://www.concordion.org/2007/concordion"
+      xmlns:r="http://pragmatists.github.io/concordion-rest-extension"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://pragmatists.github.io/concordion-rest-extension http://pragmatists.github.io/concordion-rest-extension/xsd/concordion-rest.xsd">
+<body class="container">
+
+<h2 class="page-header">Tickets</h2>
+
+<div class="panel panel-default" c:example="Create Ticket">
+	<div class="panel-body">
+	    <r:request>
+	        When I send <r:post>/api/tickets</r:post> (<r:setHeader name="Content-Type">application/json</r:setHeader>) with body 
+	        <r:jsonBody>
+	        	{
+	        		"title": "App does not work!"
+	        	}
+	        </r:jsonBody>
+	        Then I should receive <r:status>HTTP/1.1 201</r:status>
+	        with body
+	        <r:jsonResponse>
+	        	{
+	        		"ticketNumber": "{$id}"
+	        	}
+	        </r:jsonResponse>
+	    </r:request>
+	    <r:request>
+	        And I <r:get>/api/tickets/{#id}</r:get> should <r:success>return</r:success>: 
+	        <r:jsonResponse>
+	        	{
+	        		"ticketNumber": "{#id}",
+	        		"title": "App does not work!"
+	        	}
+	        </r:jsonResponse>
+	    </r:request>
+	  </div>
+</div>
+</body>
+</html>

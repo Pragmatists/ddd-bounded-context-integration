@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping
+        xmlns="http://www.hibernate.org/xsd/hibernate-mapping"
+        xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping hibernate-mapping-4.0.xsd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        default-access="field">
+
+    <typedef name="TicketNumber" class="ddd.workshop.tickets.infrastructure.persistence.ValueObjectUserType">
+        <param name="class">ddd.workshop.tickets.domain.TicketNumber</param>
+    </typedef>
+    <typedef name="AssigneeID" class="ddd.workshop.tickets.infrastructure.persistence.ValueObjectUserType">
+        <param name="class">ddd.workshop.tickets.domain.AssigneeID</param>
+    </typedef>
+    <typedef name="ProductVersion" class="ddd.workshop.tickets.infrastructure.persistence.ValueObjectUserType">
+        <param name="class">ddd.workshop.tickets.domain.ProductVersion</param>
+    </typedef>
+    <typedef name="Status" class="ddd.workshop.tickets.infrastructure.persistence.ValueObjectUserType">
+        <param name="class">ddd.workshop.tickets.domain.Status</param>
+        <param name="factoryMethod">of</param>
+    </typedef>
+    <typedef name="Resolution" class="org.hibernate.type.EnumType">
+    	<param name="enumClass">ddd.workshop.tickets.domain.Ticket$Resolution</param>
+        <param name="useNamed">true</param>
+    </typedef>
+
+    <class name="ddd.workshop.tickets.domain.Ticket" table="T_TICKETS">
+        <id name="number" type="TicketNumber" column="TICKET_NUMBER"/>
+        <property name="title" column="TITLE"/>
+        <property name="description" column="DESCRIPTION"/>
+        <property name="occuredIn" type="ProductVersion" column="OCCURED_IN"/>
+        <property name="fixedIn" type="ProductVersion" column="FIXED_IN"/>
+        <property name="createdAt" column="CREATED_AT"/>
+        <property name="assignee" type="AssigneeID" column="ASSIGNED_TO"/>
+        <property name="status" type="Status" column="STATUS"/>
+        <property name="resolution" type="Resolution" column="RESOLUTION"/>
+
+
+        <set name="related" 
+            table="T_RELATED_TICKETS" 
+            fetch="join" 
+            outer-join="true" 
+            lazy="false"
+            inverse="true"
+            cascade="all">
+            <key>
+                <column name="SOURCE_TICKET_NUMBER" not-null="true"/>
+            </key>
+            <one-to-many class="ddd.workshop.tickets.domain.Ticket$RelatedTicket" />
+        </set>
+    </class>
+
+    <class name="ddd.workshop.tickets.domain.Ticket$RelatedTicket" table="T_RELATED_TICKETS">
+        <composite-id>
+            <key-many-to-one name="source" class="ddd.workshop.tickets.domain.Ticket" column="SOURCE_TICKET_NUMBER"></key-many-to-one>
+            <key-property name="type" column="TYPE"/>
+            <key-property name="target" type="TicketNumber" column="TARGET_TICKET_NUMBER"/> 
+        </composite-id>
+    </class>
+
+</hibernate-mapping>
