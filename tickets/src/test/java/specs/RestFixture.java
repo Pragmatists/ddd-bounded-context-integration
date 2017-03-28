@@ -1,6 +1,7 @@
 package specs;
 
 import org.chiknrice.test.SpringifiedConcordionRunner;
+import org.concordion.api.ConcordionResources;
 import org.concordion.api.FullOGNL;
 import org.concordion.api.extension.Extension;
 import org.junit.Before;
@@ -16,6 +17,7 @@ import pl.pragmatists.concordion.rest.RestExtension;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { TicketsApplication.class })
 @FullOGNL
 @ActiveProfiles({ "persistence-hibernate" })
+@ConcordionResources(value="/tickets.css")
 public abstract class RestFixture {
 
     @LocalServerPort

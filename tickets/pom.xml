@@ -72,6 +72,12 @@
     </dependency>
 
 	<dependency>
+	  <groupId>org.concordion</groupId>
+	  <artifactId>concordion</artifactId>
+	  <version>2.1.0</version>
+      <scope>test</scope>
+	</dependency>
+	<dependency>
 	  <groupId>pl.pragmatists</groupId>
 	  <artifactId>concordion-rest-extension</artifactId>
 	  <version>0.5.6</version>
