@@ -1,9 +1,13 @@
 package ddd.workshop.tickets.appliaction;
 
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import ddd.workshop.tickets.appliaction.TicketsEndpoint.NewTicketJson;
 import ddd.workshop.tickets.domain.Ticket;
 import ddd.workshop.tickets.domain.TicketFactory;
 import ddd.workshop.tickets.domain.TicketNumber;
@@ -33,13 +36,20 @@ public class TicketsEndpoint {
     
     @RequestMapping(method=POST)
     @Transactional
-    public ResponseEntity<TicketReferenceJson> create(@RequestBody NewTicketJson json) {
+    public ResponseEntity<TicketReferenceJson> create(@RequestBody NewTicketJson json) throws URISyntaxException {
         
         Ticket ticket = factory.newTicket();
         ticket.renameTo(json.title);
         tickets.store(ticket);
         
-        return new ResponseEntity<>(new TicketReferenceJson(ticket), CREATED);
+        return ResponseEntity
+                .created(link(ticket))
+                .body(new TicketReferenceJson(ticket));
+    }
+
+
+    private URI link(Ticket ticket) {
+        return linkTo(methodOn(TicketsEndpoint.class).load(ticket.number().toString())).toUri();
     }
 
 

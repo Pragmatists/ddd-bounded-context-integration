@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 public class TicketsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TicketsApplication.class, args);
+		SpringApplication app = new SpringApplication(TicketsApplication.class);
+		app.setAdditionalProfiles("persistence-hibernate");
+		app.run(args);
 	}
 }
